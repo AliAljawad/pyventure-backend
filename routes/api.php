@@ -21,4 +21,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/login', [AuthController::class, 'login']);         // Step 1: Sends code
+    Route::post('/verify-2fa', [AuthController::class, 'verify2FA']); // Step 2: Verify and get token
+
 });

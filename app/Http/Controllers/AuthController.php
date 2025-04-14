@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        // Validate registration data
         $validator = Validator::make($request->all(), [
             'name'     => 'required|string|max:255',
             'username' => 'required|string|max:50|unique:users',
@@ -23,6 +26,7 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Create the user
         $user = User::create([
             'name'     => $request->name,
             'username' => $request->username,
@@ -31,33 +35,53 @@ class AuthController extends Controller
             'rank'     => 'Novice',
         ]);
 
-        $token = JWTAuth::fromUser($user);
+        // Generate 2FA code
+        $code = rand(100000, 999999);
+        $user->two_fa_code = $code;
+        $user->two_fa_expires_at = Carbon::now()->addMinutes(10);
+        $user->save();
 
-        return response()->json(compact('user', 'token'));
-    }
-
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
-        }
+        // Send 2FA code to the user's email
+        Mail::raw("Your 2FA code is: $code", function ($message) use ($user) {
+            $message->to($user->email)->subject('Your 2FA Code');
+        });
 
         return response()->json([
-            'token' => $token,
-            'user' => auth()->user(),
+            'message' => 'Registration successful. A 2FA code has been sent to your email. Please verify it.',
         ]);
     }
 
-    public function logout()
+    public function verify2FA(Request $request)
     {
-        auth()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
-    }
+        // Validate the incoming request
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required|string',
+        ]);
 
-    public function me()
-    {
-        return response()->json(auth()->user());
+        // Look for the user and verify the 2FA code
+        $user = User::where('email', $request->email)
+                    ->where('two_fa_code', $request->code)
+                    ->where('two_fa_expires_at', '>', Carbon::now())
+                    ->first();
+
+        // If no user or invalid/expired code
+        if (!$user) {
+            return response()->json(['error' => 'Invalid or expired 2FA code'], 401);
+        }
+
+        // Clear the 2FA code after successful verification
+        $user->two_fa_code = null;
+        $user->two_fa_expires_at = null;
+        $user->save();
+
+        // Generate and return a JWT token
+        $token = JWTAuth::fromUser($user);
+
+        return response()->json([
+            'message' => '2FA verified successfully.',
+            'token' => $token,
+            'user' => $user,
+        ]);
     }
 }

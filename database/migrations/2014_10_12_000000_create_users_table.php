@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('rank')->nullable();
             $table->rememberToken();
+            $table->string('two_fa_code')->nullable();
+            $table->timestamp('two_fa_expires_at')->nullable();
+
             $table->timestamps();
         });
     }

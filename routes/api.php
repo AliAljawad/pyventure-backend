@@ -1,8 +1,12 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LevelController;
+use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\AchievementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,11 +21,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/verify-2fa', [AuthController::class, 'verify2FA']);
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/login', [AuthController::class, 'login']);         // Step 1: Sends code
-    Route::post('/verify-2fa', [AuthController::class, 'verify2FA']); // Step 2: Verify and get token
-
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::get('/achievements', [AchievementController::class, 'index']);
+    Route::get('/levels', [LevelController::class, 'index']);
+    Route::get('/levels/{id}', [LevelController::class, 'show']);
+    Route::post('/levels', [LevelController::class, 'store']);
+    Route::put('/levels/{id}', [LevelController::class, 'update']);
+    Route::delete('/levels/{id}', [LevelController::class, 'destroy']);
+    Route::get('/submissions', [SubmissionController::class, 'index']);
+    Route::post('/submissions', [SubmissionController::class, 'store']);
+    Route::get('/progress', [ProgressController::class, 'index']);
+    Route::post('/progress', [ProgressController::class, 'update']);
 });

@@ -61,9 +61,9 @@ class AuthController extends Controller
 
         // Look for the user and verify the 2FA code
         $user = User::where('email', $request->email)
-                    ->where('two_fa_code', $request->code)
-                    ->where('two_fa_expires_at', '>', Carbon::now())
-                    ->first();
+            ->where('two_fa_code', $request->code)
+            ->where('two_fa_expires_at', '>', Carbon::now())
+            ->first();
 
         // If no user or invalid/expired code
         if (!$user) {
@@ -83,5 +83,41 @@ class AuthController extends Controller
             'token' => $token,
             'user' => $user,
         ]);
+    }
+    public function login(Request $request)
+    {
+        $request->validate(['email' => 'required|email', 'password' => 'required|string',]);
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Invalid credentials'], 401);
+        }
+
+        // Generate and send 2FA code
+        $code = rand(100000, 999999);
+        $user->two_fa_code = $code;
+        $user->two_fa_expires_at = now()->addMinutes(10);
+        $user->save();
+
+        Mail::raw("Your 2FA code is: $code", function ($message) use ($user) {
+            $message->to($user->email)->subject('Your 2FA Code');
+        });
+
+        return response()->json([
+            'message' => '2FA code sent to your email. Please verify it.',
+        ]);
+    }
+    public function logout(Request $request)
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+
+
+            return response()->json([
+                'message' => 'Successfully logged out',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to logout'], 500);
+        }
     }
 }

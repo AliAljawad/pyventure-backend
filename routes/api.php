@@ -7,7 +7,7 @@ use App\Http\Controllers\LevelController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\AchievementController;
-
+use App\Http\Controllers\LeaderboardController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,6 +22,7 @@ use App\Http\Controllers\AchievementController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/verify-2fa', [AuthController::class, 'verify2FA']);
+Route::get('/leaderboard', [LeaderboardController::class, 'index']);
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);

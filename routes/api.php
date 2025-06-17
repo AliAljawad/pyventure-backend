@@ -1,24 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\LevelController;
-use App\Http\Controllers\SubmissionController;
-use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\AchievementController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LeaderboardController;
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
+use App\Http\Controllers\LevelController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\SubmissionController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/verify-2fa', [AuthController::class, 'verify2FA']);
@@ -29,13 +17,23 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::get('/achievements', [AchievementController::class, 'index']);
+
+    // Levels routes
     Route::get('/levels', [LevelController::class, 'index']);
     Route::get('/levels/{id}', [LevelController::class, 'show']);
     Route::post('/levels', [LevelController::class, 'store']);
     Route::put('/levels/{id}', [LevelController::class, 'update']);
     Route::delete('/levels/{id}', [LevelController::class, 'destroy']);
+
+    // Submissions routes
     Route::get('/submissions', [SubmissionController::class, 'index']);
     Route::post('/submissions', [SubmissionController::class, 'store']);
+
+    // Progress routes
     Route::get('/progress', [ProgressController::class, 'index']);
     Route::post('/progress', [ProgressController::class, 'update']);
+
+    // MISSING: Individual progress route that your frontend might need
+    Route::get('/user/progress', [ProgressController::class, 'index']);
+    Route::post('/user/progress', [ProgressController::class, 'update']);
 });

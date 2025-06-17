@@ -1,21 +1,23 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
 class Achievement extends Model
 {
-    use HasFactory, Notifiable;
-    protected $fillable = ['title', 'description', 'icon_url'];
+    use HasFactory;
 
-    public function users(): BelongsToMany
+    protected $fillable = [
+        'title',
+        'description',
+        'icon_url',
+    ];
+
+    public function users()
     {
         return $this->belongsToMany(User::class, 'user_achievements')
-                    ->withTimestamps()
-                    ->withPivot('earned_at');
+            ->withTimestamps()
+            ->withPivot('earned_at');
     }
 }

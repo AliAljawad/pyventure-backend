@@ -18,6 +18,7 @@ return new class extends Migration
             $table->longText('code');
             $table->boolean('is_correct');
             $table->timestamp('submitted_at')->useCurrent();
+            $table->timestamps();
         });
 
     }

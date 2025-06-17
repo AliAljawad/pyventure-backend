@@ -23,7 +23,6 @@ class UserProgressSeeder extends Seeder
                     'is_completed' => rand(0, 1),
                     'score' => rand(10, 100),
                     'attempts' => rand(1, 5),
-                    'last_updated' => now(),
                 ]);
             }
         }

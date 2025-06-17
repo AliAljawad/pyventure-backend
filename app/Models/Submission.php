@@ -1,17 +1,25 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Submission extends Model
 {
-    use HasFactory, Notifiable;
-    protected $fillable = ['user_id', 'level_id', 'code', 'is_correct', 'submitted_at'];
+    use HasFactory;
 
-    public $timestamps = false;
+    protected $fillable = [
+        'user_id',
+        'level_id',
+        'code',
+        'is_correct',
+        'submitted_at',
+    ];
+
+    protected $casts = [
+        'is_correct' => 'boolean',
+        'submitted_at' => 'datetime',
+    ];
 
     public function user()
     {

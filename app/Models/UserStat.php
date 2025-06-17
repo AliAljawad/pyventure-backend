@@ -2,18 +2,30 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
 class UserStat extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+
     protected $table = 'user_stats';
-    public $timestamps = false;
+
 
     protected $fillable = [
-        'user_id', 'total_attempts', 'total_completed_levels', 'total_score', 'time_spent'
+        'user_id',
+        'total_attempts',
+        'total_completed_levels',
+        'total_score',
+        'time_spent',
+    ];
+
+    protected $casts = [
+        'total_attempts' => 'integer',
+        'total_completed_levels' => 'integer',
+        'total_score' => 'integer',
+        'time_spent' => 'integer',
     ];
 
     public function user()

@@ -2,42 +2,48 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
-    protected $fillable = ['name', 'username', 'email', 'password', 'rank'];
-    protected $hidden = ['password'];
+    use HasApiTokens, HasFactory, Notifiable;
 
+    protected $fillable = [
+        'name',
+        'username',
+        'email',
+        'password',
+        'rank',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'two_fa_code',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'two_fa_expires_at' => 'datetime',
+    ];
+
+    // JWT methods
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims(): array
+    public function getJWTCustomClaims()
     {
         return [];
     }
 
-    public function achievements(): BelongsToMany
-    {
-        return $this->belongsToMany(Achievement::class, 'user_achievements')
-                    ->withTimestamps()
-                    ->withPivot('earned_at');
-    }
-
-    public function submissions(): HasMany
-    {
-        return $this->hasMany(Submission::class);
-    }
-
-    public function progress(): HasMany
+    // MISSING RELATIONSHIPS
+    public function progress()
     {
         return $this->hasMany(UserProgress::class);
     }
@@ -45,5 +51,17 @@ class User extends Authenticatable implements JWTSubject
     public function stats()
     {
         return $this->hasOne(UserStat::class);
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
+
+    public function achievements()
+    {
+        return $this->belongsToMany(Achievement::class, 'user_achievements')
+            ->withTimestamps()
+            ->withPivot('earned_at');
     }
 }

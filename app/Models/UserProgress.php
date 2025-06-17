@@ -2,19 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class UserProgress extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+
     protected $table = 'user_progress';
-    public $timestamps = false;
+
 
     protected $fillable = [
-        'user_id', 'level_id', 'is_completed', 'score', 'attempts', 'last_updated'
+        'user_id',
+        'level_id',
+        'is_completed',
+        'score',
+        'attempts',
     ];
+
+    protected $casts = [
+        'is_completed' => 'boolean',
+        'score' => 'integer',
+        'attempts' => 'integer',
+    ];
+
 
     public function user()
     {

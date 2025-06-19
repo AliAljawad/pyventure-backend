@@ -14,7 +14,6 @@ Route::get('/leaderboard', [LeaderboardController::class, 'index']);
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/me', [AuthController::class, 'me']);
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::get('/achievements', [AchievementController::class, 'index']);
     Route::get('/user',[AuthController::class,'user']);
@@ -29,10 +28,6 @@ Route::middleware('auth:api')->group(function () {
     // Submissions routes
     Route::get('/submissions', [SubmissionController::class, 'index']);
     Route::post('/submissions', [SubmissionController::class, 'store']);
-
-    // Progress routes
-    Route::get('/progress', [ProgressController::class, 'index']);
-    Route::post('/progress', [ProgressController::class, 'update']);
 
     //Individual progress route that your frontend might need
     Route::get('/user/progress', [ProgressController::class, 'index']);

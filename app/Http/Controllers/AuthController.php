@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -118,6 +119,37 @@ class AuthController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to logout'], 500);
+        }
+    }
+
+    public function user(Request $request)
+    {
+        try {
+            // Get the authenticated user
+            $user = Auth::user();
+
+            if (!$user) {
+                return response()->json([
+                    'error' => 'User not authenticated',
+                    'message' => 'Authentication required'
+                ], 401);
+            }
+            return response()->json([
+                'success' => true,
+                'user' => $user,
+            ]);
+
+        } catch (\Illuminate\Auth\AuthenticationException $e) {
+            return response()->json([
+                'error' => 'Authentication failed',
+                'message' => 'Invalid or expired token'
+            ], 401);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Server error',
+                'message' => 'Failed to fetch user profile'
+            ], 500);
         }
     }
 }

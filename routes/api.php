@@ -17,6 +17,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::get('/achievements', [AchievementController::class, 'index']);
+    Route::get('/user',[AuthController::class,'user']);
 
     // Levels routes
     Route::get('/levels', [LevelController::class, 'index']);

@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('difficulty', ['easy', 'medium', 'hard']);
             $table->string('category');
-            $table->text('question');
-            $table->text('solution')->nullable();
+            $table->enum('difficulty', ['easy', 'medium', 'hard']);
+            $table->string('topic')->nullable();
+            $table->boolean('is_completed')->default(false);
+            $table->boolean('is_unlocked')->default(false);
             $table->timestamps();
         });
     }

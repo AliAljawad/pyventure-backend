@@ -98,7 +98,6 @@ class ProgressController extends Controller
                 'total_attempts' => 0,
                 'total_completed_levels' => 0,
                 'total_score' => 0,
-                'time_spent' => 0,
             ]);
         }
 

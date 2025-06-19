@@ -32,7 +32,6 @@ class ProfileController extends Controller
                 'total_attempts' => 0,
                 'total_completed_levels' => 0,
                 'total_score' => 0,
-                'time_spent' => 0
             ]);
 
             // Get user progress with level details
@@ -81,7 +80,6 @@ class ProfileController extends Controller
                     'total_attempts' => $stats->total_attempts,
                     'total_completed_levels' => $stats->total_completed_levels,
                     'total_score' => $stats->total_score,
-                    'time_spent' => $stats->time_spent
                 ],
                 'progress' => $progress,
                 'achievements' => $achievements

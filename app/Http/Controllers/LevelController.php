@@ -10,7 +10,14 @@ class LevelController extends Controller
 {
     public function index(Request $request)
     {
-        $userId = Auth::id();
+        $user=Auth::user();
+        $userId = $user->id;
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired token'
+            ], 401);
+        }
 
         $levels = Level::select([
             'id',

@@ -34,7 +34,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/progress', [ProgressController::class, 'index']);
     Route::post('/progress', [ProgressController::class, 'update']);
 
-    // MISSING: Individual progress route that your frontend might need
+    //Individual progress route that your frontend might need
     Route::get('/user/progress', [ProgressController::class, 'index']);
     Route::post('/user/progress', [ProgressController::class, 'update']);
 });

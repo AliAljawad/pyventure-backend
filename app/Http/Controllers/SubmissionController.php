@@ -6,6 +6,7 @@ use App\Models\Submission;
 use App\Models\Level;
 use App\Models\UserStat;
 use App\Models\UserProgress;
+use App\Services\AchievementService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -60,7 +61,8 @@ class SubmissionController extends Controller
             if ($request->is_correct) {
                 $levelData = $this->handleLevelCompletion($request->level_id);
             }
-
+            $achievementService = new AchievementService();
+            $newAchievements = $achievementService->checkAndAwardAchievements(Auth::id());
             DB::commit();
 
             return response()->json([

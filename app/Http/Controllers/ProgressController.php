@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserProgress;
 use App\Models\Level;
+use App\Services\AchievementService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -63,6 +64,9 @@ class ProgressController extends Controller
 
         // Update user stats when progress is updated
         $this->updateUserStats($levelId, $request->is_completed);
+        // Check for achievements
+        $achievementService = new AchievementService();
+        $newAchievements = $achievementService->checkAndAwardAchievements(Auth::id());
 
         return response()->json([
             'message' => 'Progress updated successfully',

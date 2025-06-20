@@ -90,7 +90,7 @@ class ProfileController extends Controller
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'fuck' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString()
             ], 500);
         }
     }
